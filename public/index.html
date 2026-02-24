@@ -8,18 +8,59 @@
 <style>
   :root{--ink:#1a1a2e;--paper:#f5f0e8;--gold:#c9a84c;--gold-light:#e8d5a3;--accent:#2d5a8e}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh}
+  body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh;display:flex;flex-direction:column}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(201,168,76,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 80%,rgba(45,90,142,.12) 0%,transparent 60%);pointer-events:none;z-index:0}
-  header{position:relative;z-index:10;text-align:center;padding:40px 20px 24px;border-bottom:1px solid rgba(201,168,76,.2)}
-  .logo-tag{display:inline-block;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:.8}
-  header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,3.5rem);font-weight:900;background:linear-gradient(135deg,var(--paper) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  header p{margin-top:8px;color:rgba(245,240,232,.5);font-size:.9rem}
-  .container{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:28px 16px 80px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+
+  /* NAVBAR */
+  nav{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(201,168,76,.15)}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--paper) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav-logo span{font-size:11px;letter-spacing:3px;display:block;color:var(--gold);opacity:.7;font-family:'DM Sans',sans-serif;-webkit-text-fill-color:var(--gold)}
+  .hamburger{background:none;border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:all .2s}
+  .hamburger:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.6)}
+  .hamburger span{width:22px;height:2px;background:var(--gold);border-radius:2px;display:block;transition:all .3s}
+  .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+  /* SIDEBAR MENU */
+  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+  .sidebar-overlay.open{opacity:1;pointer-events:all}
+  .sidebar{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:#0f0f22;border-left:1px solid rgba(201,168,76,.2);z-index:201;transition:right .3s ease;overflow-y:auto;display:flex;flex-direction:column}
+  .sidebar.open{right:0}
+  .sidebar-header{padding:20px 20px 16px;border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between}
+  .sidebar-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem}
+  .sidebar-close{background:none;border:none;color:var(--paper);font-size:22px;cursor:pointer;opacity:.6;padding:4px}
+  .sidebar-close:hover{opacity:1}
+  .sidebar-menu{flex:1;padding:8px 0}
+  .sidebar-item{padding:0}
+  .sidebar-btn{width:100%;text-align:left;background:none;border:none;padding:16px 20px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;border-bottom:1px solid rgba(255,255,255,.04)}
+  .sidebar-btn:hover{background:rgba(201,168,76,.08);color:var(--gold)}
+  .sidebar-btn .icon{font-size:18px;width:24px;text-align:center}
+  .sidebar-content{display:none;padding:16px 20px 20px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:rgba(245,240,232,.7);line-height:1.7}
+  .sidebar-content.open{display:block}
+  .sidebar-content a{color:var(--gold);text-decoration:none}
+  .sidebar-content a:hover{text-decoration:underline}
+  .sidebar-content strong{color:var(--paper);font-weight:600}
+  .rekening-box{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-top:10px;text-align:center}
+  .rekening-box .bank{font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px}
+  .rekening-box .rek-num{font-size:22px;font-weight:700;color:var(--paper);letter-spacing:3px;margin:4px 0}
+  .rekening-box .rek-name{font-size:12px;color:rgba(245,240,232,.6)}
+
+  /* HEADER */
+  header{position:relative;z-index:10;text-align:center;padding:32px 20px 20px}
+  .logo-tag{display:inline-block;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;opacity:.8}
+  header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,var(--paper) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  header p{margin-top:8px;color:rgba(245,240,232,.5);font-size:.88rem}
+
+  /* CONTAINER */
+  .container{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:24px 16px 40px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;flex:1}
   @media(max-width:800px){.container{grid-template-columns:1fr}}
-  .form-panel{background:rgba(245,240,232,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:24px;backdrop-filter:blur(10px)}
-  .panel-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+
+  /* FORM */
+  .form-panel{background:rgba(245,240,232,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:22px;backdrop-filter:blur(10px)}
+  .panel-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
   .panel-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.2)}
-  .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:8px;margin-top:18px}
+  .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:8px;margin-top:16px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
   label{font-size:12px;color:rgba(245,240,232,.5)}
@@ -29,37 +70,47 @@
   select option{background:var(--ink)}
   textarea{resize:vertical;min-height:70px}
 
+  /* RINGKASAN AI */
+  .ringkasan-box{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px;margin-bottom:4px}
+  .ringkasan-hint{font-size:11px;color:rgba(245,240,232,.45);margin-bottom:8px;line-height:1.5}
+  .ringkasan-hint strong{color:var(--gold);opacity:.8}
+  .keyword-input{width:100%;background:rgba(245,240,232,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:9px 12px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:13px}
+  .keyword-input:focus{outline:none;border-color:var(--gold)}
+  .keyword-input::placeholder{color:rgba(245,240,232,.25)}
+  .ringkasan-preview{margin-top:10px;font-size:12px;color:rgba(245,240,232,.7);line-height:1.6;background:rgba(245,240,232,.04);border-radius:8px;padding:10px;display:none;border-left:2px solid var(--gold)}
+  .ringkasan-preview.visible{display:block}
+
   /* FOTO */
-  .foto-upload-area{border:2px dashed rgba(201,168,76,.3);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:80px}
+  .foto-upload-area{border:2px dashed rgba(201,168,76,.3);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:76px}
   .foto-upload-area:hover{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.05)}
-  .foto-preview{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 8px;display:block}
-  .foto-placeholder{color:rgba(245,240,232,.4);font-size:13px}
-  .foto-placeholder span{font-size:28px;display:block;margin-bottom:4px}
+  .foto-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 6px;display:block}
+  .foto-placeholder{color:rgba(245,240,232,.4);font-size:12px}
+  .foto-placeholder span{font-size:24px;display:block;margin-bottom:4px}
   #foto-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
   .btn-hapus-foto{font-size:11px;color:#e8a0a0;background:rgba(142,45,45,.2);border:1px solid rgba(142,45,45,.3);border-radius:6px;padding:4px 12px;cursor:pointer;margin-top:6px;font-family:'DM Sans',sans-serif;display:none}
 
   /* TEMPLATE */
-  .template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .template-card{border:2px solid rgba(201,168,76,.15);border-radius:12px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .2s;background:rgba(245,240,232,.03)}
+  .template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .template-card{border:2px solid rgba(201,168,76,.15);border-radius:12px;padding:8px 6px;cursor:pointer;text-align:center;transition:all .2s;background:rgba(245,240,232,.03)}
   .template-card:hover{border-color:rgba(201,168,76,.4)}
   .template-card.active{border-color:var(--gold);background:rgba(201,168,76,.1)}
-  .template-thumb{width:100%;height:55px;border-radius:6px;margin-bottom:6px;position:relative;overflow:hidden}
+  .template-thumb{width:100%;height:50px;border-radius:6px;margin-bottom:5px;position:relative;overflow:hidden}
   .t1-thumb{background:linear-gradient(135deg,#1a1a2e 40%,#2d3561 100%)}
   .t2-thumb{background:linear-gradient(135deg,#1a4a2e 40%,#2d6b45 100%)}
   .t3-thumb{background:linear-gradient(135deg,#4a1a2e 40%,#8e2d5a 100%)}
   .template-thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:white;opacity:.9}
-  .template-name{font-size:11px;color:rgba(245,240,232,.7);font-weight:500}
+  .template-name{font-size:10px;color:rgba(245,240,232,.7);font-weight:500}
   .template-card.active .template-name{color:var(--gold)}
 
   /* DYNAMIC */
-  .dynamic-list{display:flex;flex-direction:column;gap:8px}
-  .dynamic-item{display:flex;gap:8px;align-items:center}
+  .dynamic-list{display:flex;flex-direction:column;gap:7px}
+  .dynamic-item{display:flex;gap:7px;align-items:center}
   .dynamic-item input{flex:1}
-  .btn-remove{background:rgba(142,45,45,.2);border:1px solid rgba(142,45,45,.3);color:#e8a0a0;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .btn-remove{background:rgba(142,45,45,.2);border:1px solid rgba(142,45,45,.3);color:#e8a0a0;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .btn-remove:hover{background:rgba(142,45,45,.4)}
-  .btn-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gold);background:rgba(201,168,76,.08);border:1px dashed rgba(201,168,76,.3);border-radius:8px;padding:6px 14px;cursor:pointer;transition:all .2s;margin-top:6px;font-family:'DM Sans',sans-serif}
+  .btn-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gold);background:rgba(201,168,76,.08);border:1px dashed rgba(201,168,76,.3);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .2s;margin-top:5px;font-family:'DM Sans',sans-serif}
   .btn-add:hover{background:rgba(201,168,76,.15)}
-  .btn-generate{width:100%;padding:15px;margin-top:20px;background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:var(--ink);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s}
+  .btn-generate{width:100%;padding:14px;margin-top:18px;background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:var(--ink);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s}
   .btn-generate:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.35)}
   .btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .status-msg{text-align:center;font-size:13px;color:var(--gold);margin-top:10px;min-height:20px;opacity:0;transition:opacity .3s}
@@ -71,51 +122,49 @@
   .cv-placeholder{text-align:center;padding:60px 30px;color:rgba(26,26,46,.3)}
   .cv-placeholder p{font-size:14px;color:rgba(26,26,46,.4);margin-top:12px}
   #cv-content{width:100%;color:#1a1a2e}
-  .cv-actions{display:flex;gap:10px;margin-top:14px}
-  .btn-action{flex:1;padding:12px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+  .cv-actions{display:flex;gap:10px;margin-top:12px}
+  .btn-action{flex:1;padding:11px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
   .btn-download{background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:var(--ink)}
   .btn-print{background:rgba(245,240,232,.08);border:1px solid rgba(201,168,76,.2)!important;color:var(--paper)}
 
-  /* TEMPLATE 1 - NAVY */
-  .t1 .cv-header-bar{background:linear-gradient(135deg,#1a1a2e,#2d3561);padding:28px;color:white;display:flex;gap:20px;align-items:center}
-  .t1 .cv-foto{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;flex-shrink:0}
-  .t1 .cv-foto-placeholder{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(201,168,76,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
-  .t1 .cv-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white}
-  .t1 .cv-title{color:#e8d5a3;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+  /* TEMPLATES */
+  .t1 .cv-header-bar{background:linear-gradient(135deg,#1a1a2e,#2d3561);padding:26px;color:white;display:flex;gap:18px;align-items:center}
+  .t1 .cv-foto{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;flex-shrink:0}
+  .t1 .cv-foto-placeholder{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(201,168,76,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .t1 .cv-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white}
+  .t1 .cv-title{color:#e8d5a3;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
   .t1 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d5a8e;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #2d5a8e}
   .t1 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8a7040;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #c9a84c}
-  .t1 .cv-skill-tag{background:rgba(45,90,142,.1);color:#2d5a8e;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500}
+  .t1 .cv-skill-tag{background:rgba(45,90,142,.1);color:#2d5a8e;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
   .t1 .cv-lang-level{color:#2d5a8e;font-weight:500}
 
-  /* TEMPLATE 2 - GREEN */
-  .t2 .cv-header-bar{background:linear-gradient(135deg,#1a4a2e,#2d6b45);padding:28px;color:white;display:flex;gap:20px;align-items:center}
-  .t2 .cv-foto{width:80px;height:80px;border-radius:12px;object-fit:cover;border:3px solid #7ecca0;flex-shrink:0}
-  .t2 .cv-foto-placeholder{width:80px;height:80px;border-radius:12px;background:rgba(255,255,255,.1);border:3px solid rgba(126,204,160,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
-  .t2 .cv-name{font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;color:white}
-  .t2 .cv-title{color:#a8e6c3;font-size:12px;letter-spacing:1px;margin-top:4px;font-weight:300}
+  .t2 .cv-header-bar{background:linear-gradient(135deg,#1a4a2e,#2d6b45);padding:26px;color:white;display:flex;gap:18px;align-items:center}
+  .t2 .cv-foto{width:76px;height:76px;border-radius:12px;object-fit:cover;border:3px solid #7ecca0;flex-shrink:0}
+  .t2 .cv-foto-placeholder{width:76px;height:76px;border-radius:12px;background:rgba(255,255,255,.1);border:3px solid rgba(126,204,160,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .t2 .cv-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:white}
+  .t2 .cv-title{color:#a8e6c3;font-size:11px;letter-spacing:1px;margin-top:4px;font-weight:300}
   .t2 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d6b45;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #2d6b45}
   .t2 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d6b45;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #7ecca0}
-  .t2 .cv-skill-tag{background:rgba(45,107,69,.1);color:#2d6b45;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500}
+  .t2 .cv-skill-tag{background:rgba(45,107,69,.1);color:#2d6b45;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
   .t2 .cv-lang-level{color:#2d6b45;font-weight:500}
 
-  /* TEMPLATE 3 - ROSE */
-  .t3 .cv-header-bar{background:linear-gradient(135deg,#4a1a2e,#8e2d5a);padding:28px;color:white;display:flex;gap:20px;align-items:center}
-  .t3 .cv-foto{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #f0a0c0;flex-shrink:0}
-  .t3 .cv-foto-placeholder{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(240,160,192,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
-  .t3 .cv-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white;font-style:italic}
-  .t3 .cv-title{color:#f0c0d4;font-size:12px;letter-spacing:2px;margin-top:4px}
+  .t3 .cv-header-bar{background:linear-gradient(135deg,#4a1a2e,#8e2d5a);padding:26px;color:white;display:flex;gap:18px;align-items:center}
+  .t3 .cv-foto{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #f0a0c0;flex-shrink:0}
+  .t3 .cv-foto-placeholder{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(240,160,192,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .t3 .cv-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white;font-style:italic}
+  .t3 .cv-title{color:#f0c0d4;font-size:11px;letter-spacing:2px;margin-top:4px}
   .t3 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8e2d5a;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #8e2d5a}
   .t3 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8e2d5a;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #f0a0c0}
-  .t3 .cv-skill-tag{background:rgba(142,45,90,.1);color:#8e2d5a;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500}
+  .t3 .cv-skill-tag{background:rgba(142,45,90,.1);color:#8e2d5a;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
   .t3 .cv-lang-level{color:#8e2d5a;font-weight:500}
 
   /* SHARED CV */
-  .cv-contact-bar{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .cv-contact-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
   .cv-contact-item{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.75)}
-  .cv-body{padding:22px 28px;display:grid;grid-template-columns:1fr 2fr;gap:22px;font-family:'DM Sans',sans-serif}
-  .cv-section{margin-bottom:18px}
+  .cv-body{padding:20px 26px;display:grid;grid-template-columns:1fr 2fr;gap:20px;font-family:'DM Sans',sans-serif}
+  .cv-section{margin-bottom:16px}
   .cv-summary{font-size:12px;line-height:1.7;color:#444}
-  .cv-exp-item{margin-bottom:14px}
+  .cv-exp-item{margin-bottom:13px}
   .cv-exp-role{font-weight:600;font-size:13px;color:#1a1a2e}
   .cv-exp-company{font-size:12px;color:#666;font-weight:500}
   .cv-exp-period{font-size:11px;color:#999;margin-bottom:4px}
@@ -127,20 +176,126 @@
   .cv-edu-year{font-size:10px;color:#999}
   .cv-lang-item{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;color:#444}
 
-  @media print{body{background:white}.form-panel,header,.cv-actions{display:none}.container{display:block;padding:0}.cv-panel{position:static}.cv-wrapper{box-shadow:none;border-radius:0}}
+  /* FOOTER */
+  footer{position:relative;z-index:10;border-top:1px solid rgba(201,168,76,.15);padding:24px 20px;text-align:center}
+  .footer-logo{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:6px}
+  .footer-text{font-size:12px;color:rgba(245,240,232,.4);line-height:1.7}
+  .footer-text a{color:var(--gold);text-decoration:none;opacity:.8}
+  .footer-text a:hover{opacity:1;text-decoration:underline}
+  .footer-divider{width:40px;height:1px;background:rgba(201,168,76,.3);margin:12px auto}
+
+  @media print{body{background:white}nav,.form-panel,header,.cv-actions,footer{display:none}.container{display:block;padding:0}.cv-panel{position:static}.cv-wrapper{box-shadow:none;border-radius:0}}
 </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">
+    CV Generator
+    <span>✦ Powered by AI</span>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- SIDEBAR -->
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Menu</div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sidebar-menu">
+
+    <div class="sidebar-item">
+      <button class="sidebar-btn" onclick="toggleMenu('tentang')">
+        <span class="icon">ℹ️</span> Tentang Aplikasi
+      </button>
+      <div class="sidebar-content" id="tentang">
+        <strong>CV Generator AI</strong><br><br>
+        Aplikasi ini dibuat sebagai tools yang memudahkan siapa saja untuk membuat CV profesional secara instan tanpa perlu keahlian desain atau menulis khusus.<br><br>
+        Cukup masukkan data diri Anda, pilih template favorit, dan biarkan AI kami menulis ringkasan profesional yang menarik secara otomatis.<br><br>
+        Tersedia 3 pilihan template CV yang elegan, fitur upload foto langsung dari galeri HP, dan hasil CV dapat diunduh atau dicetak kapan saja.<br><br>
+        <strong>Dibuat dengan ❤️ untuk membantu para pencari kerja Indonesia.</strong>
+      </div>
+    </div>
+
+    <div class="sidebar-item">
+      <button class="sidebar-btn" onclick="toggleMenu('privasi')">
+        <span class="icon">🔒</span> Kebijakan Privasi
+      </button>
+      <div class="sidebar-content" id="privasi">
+        <strong>Privasi Anda Terjaga</strong><br><br>
+        • Web ini <strong>tidak menyimpan</strong> data pribadi pengguna di server manapun.<br><br>
+        • Semua data yang Anda masukkan hanya diproses sementara untuk menghasilkan CV dan tidak disimpan.<br><br>
+        • Foto yang Anda upload hanya digunakan secara lokal di browser Anda dan tidak dikirim ke server.<br><br>
+        • Kami tidak menggunakan cookies pelacak atau alat analitik pihak ketiga.<br><br>
+        • Data Anda sepenuhnya aman dan privat.
+      </div>
+    </div>
+
+    <div class="sidebar-item">
+      <button class="sidebar-btn" onclick="toggleMenu('disclaimer')">
+        <span class="icon">📋</span> Ketentuan & Disclaimer
+      </button>
+      <div class="sidebar-content" id="disclaimer">
+        <strong>Ketentuan Penggunaan</strong><br><br>
+        • Konten ringkasan dan deskripsi CV <strong>dihasilkan oleh AI</strong> (Groq/LLaMA). Pengguna bertanggung jawab untuk memeriksa dan memverifikasi kebenaran isinya sebelum digunakan.<br><br>
+        • Aplikasi ini disediakan "sebagaimana adanya" tanpa jaminan atas keberhasilan lamaran kerja.<br><br>
+        • Penggunaan hasil CV sepenuhnya menjadi tanggung jawab pengguna.<br><br>
+        • Kami berhak memperbarui ketentuan ini sewaktu-waktu.<br><br>
+        • Dengan menggunakan aplikasi ini, Anda menyetujui ketentuan di atas.
+      </div>
+    </div>
+
+    <div class="sidebar-item">
+      <button class="sidebar-btn" onclick="toggleMenu('kontak')">
+        <span class="icon">✉️</span> Kontak
+      </button>
+      <div class="sidebar-content" id="kontak">
+        <strong>Hubungi Kami</strong><br><br>
+        Ada pertanyaan, saran, atau masukan? Jangan ragu untuk menghubungi kami:<br><br>
+        📧 Email: <a href="mailto:mholis1991@gmail.com">mholis1991@gmail.com</a><br><br>
+        Kami akan berusaha membalas dalam 1-2 hari kerja.
+      </div>
+    </div>
+
+    <div class="sidebar-item">
+      <button class="sidebar-btn" onclick="toggleMenu('donasi')">
+        <span class="icon">💛</span> Donasi Pengembangan
+      </button>
+      <div class="sidebar-content" id="donasi">
+        <strong>Dukung Pengembangan Aplikasi</strong><br><br>
+        Aplikasi ini dikembangkan secara mandiri. Biaya API AI memerlukan dukungan agar tetap gratis untuk semua pengguna.<br><br>
+        Jika aplikasi ini bermanfaat, Anda bisa berdonasi melalui:<br><br>
+        <div class="rekening-box">
+          <div class="rek-name">Transfer via</div>
+          <div class="bank">🏦 BCA</div>
+          <div class="rek-num">6095055005</div>
+          <div class="rek-name">a.n <strong>Muhamad Holis</strong></div>
+        </div>
+        <br>Terima kasih atas dukungan Anda! 🙏
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HEADER -->
 <header>
-  <div class="logo-tag">✦ Powered by Groq AI</div>
+  <div class="logo-tag">✦ AI-Powered CV Builder</div>
   <h1>CV Generator AI</h1>
-  <p>Isi data Anda — AI otomatis membuat CV profesional lengkap</p>
+  <p>Isi data Anda — AI otomatis menulis CV profesional lengkap</p>
 </header>
 
+<!-- MAIN -->
 <div class="container">
   <div class="form-panel">
     <div class="panel-title">Data Diri</div>
 
+    <!-- FOTO -->
     <div class="section-label">📷 Foto Profil</div>
     <div class="foto-upload-area" id="foto-area" onclick="document.getElementById('foto-input').click()">
       <input type="file" id="foto-input" accept="image/*" onchange="handleFoto(event)">
@@ -154,6 +309,7 @@
     </div>
     <button class="btn-hapus-foto" id="btn-hapus-foto" onclick="hapusFoto(event)">× Hapus Foto</button>
 
+    <!-- TEMPLATE -->
     <div class="section-label">🎨 Pilih Template</div>
     <div class="template-grid">
       <div class="template-card active" onclick="pilihTemplate(1)" id="tpl-1">
@@ -170,6 +326,7 @@
       </div>
     </div>
 
+    <!-- DATA PRIBADI -->
     <div class="section-label">Informasi Pribadi</div>
     <div class="form-row">
       <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="nama" placeholder="Budi Santoso"/></div>
@@ -184,34 +341,47 @@
       <div class="form-group"><label>LinkedIn / Portfolio</label><input type="text" id="linkedin" placeholder="linkedin.com/in/nama"/></div>
     </div>
 
+    <!-- KARIR -->
     <div class="section-label">Karir</div>
     <div class="form-group"><label>Posisi yang Dituju *</label><input type="text" id="posisi" placeholder="Software Engineer, Marketing Manager, dll."/></div>
-    <div class="form-group"><label>Ringkasan Diri (opsional)</label><textarea id="ringkasan" placeholder="Ceritakan tentang diri Anda..."></textarea></div>
 
+    <!-- RINGKASAN AI -->
+    <div class="section-label">✨ Ringkasan Diri (Ditulis oleh AI)</div>
+    <div class="ringkasan-box">
+      <div class="ringkasan-hint">Masukkan <strong>kata kunci</strong> tentang diri Anda, AI akan menulis ringkasan profesional secara otomatis saat Generate CV.<br>Contoh: <em>5 tahun pengalaman, leadership, inovatif, target-oriented</em></div>
+      <input type="text" class="keyword-input" id="kata_kunci" placeholder="Ketik kata kunci... misal: kreatif, berpengalaman, komunikatif, detail">
+      <div class="ringkasan-preview" id="ringkasan-preview"></div>
+    </div>
+
+    <!-- PENGALAMAN -->
     <div class="section-label">Pengalaman Kerja</div>
     <div class="dynamic-list" id="exp-list">
       <div class="dynamic-item"><input type="text" placeholder="2020–2023 | Software Engineer | PT Maju Jaya"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('exp-list','2021–2024 | Data Analyst | Startup XYZ')">+ Tambah Pengalaman</button>
 
+    <!-- PENDIDIKAN -->
     <div class="section-label">Pendidikan</div>
     <div class="dynamic-list" id="edu-list">
       <div class="dynamic-item"><input type="text" placeholder="2016–2020 | S1 Teknik Informatika | Universitas Indonesia"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('edu-list','2012–2016 | SMA Negeri 1 Jakarta')">+ Tambah Pendidikan</button>
 
+    <!-- SKILLS -->
     <div class="section-label">Keahlian (Skills)</div>
     <div class="dynamic-list" id="skill-list">
       <div class="dynamic-item"><input type="text" placeholder="JavaScript, Python, React..."/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('skill-list','Project Management, Komunikasi...')">+ Tambah Skill</button>
 
+    <!-- BAHASA -->
     <div class="section-label">Bahasa yang Dikuasai</div>
     <div class="dynamic-list" id="lang-list">
       <div class="dynamic-item"><input type="text" placeholder="Bahasa Indonesia (Native), Inggris (Profesional)"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('lang-list','Mandarin (Dasar)')">+ Tambah Bahasa</button>
 
+    <!-- SERTIFIKASI -->
     <div class="section-label">Sertifikasi (opsional)</div>
     <div class="dynamic-list" id="cert-list">
       <div class="dynamic-item"><input type="text" placeholder="AWS Certified Developer – 2022"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
@@ -222,6 +392,7 @@
     <div class="status-msg" id="status-msg"></div>
   </div>
 
+  <!-- CV PREVIEW -->
   <div class="cv-panel">
     <div class="panel-title">Preview CV</div>
     <div class="cv-wrapper" id="cv-wrapper">
@@ -237,11 +408,44 @@
   </div>
 </div>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">✦ CV Generator AI</div>
+  <div class="footer-divider"></div>
+  <div class="footer-text">
+    Dibuat dengan teknologi <a href="https://www.anthropic.com/claude" target="_blank">Claude AI by Anthropic</a><br>
+    Ingin akses AI lebih canggih? <a href="https://www.anthropic.com/pricing" target="_blank">Lihat paket Claude AI →</a><br><br>
+    © 2025 CV Generator AI · Powered by Claude & Groq AI
+  </div>
+</footer>
+
 <script>
 let fotoBase64 = null;
 let activeTemplate = 1;
 let lastCV = null;
 
+// SIDEBAR
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const hamburger = document.getElementById('hamburger');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  hamburger.classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+function toggleMenu(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.sidebar-content').forEach(c => c.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+// FOTO
 function handleFoto(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -256,7 +460,6 @@ function handleFoto(event) {
   };
   reader.readAsDataURL(file);
 }
-
 function hapusFoto(e) {
   e.stopPropagation();
   fotoBase64 = null;
@@ -267,6 +470,7 @@ function hapusFoto(e) {
   if (lastCV) renderCV(lastCV);
 }
 
+// TEMPLATE
 function pilihTemplate(n) {
   activeTemplate = n;
   document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
@@ -274,6 +478,7 @@ function pilihTemplate(n) {
   if (lastCV) renderCV(lastCV);
 }
 
+// FORM HELPERS
 function addItem(listId, placeholder) {
   const list = document.getElementById(listId);
   const div = document.createElement('div');
@@ -282,22 +487,20 @@ function addItem(listId, placeholder) {
   list.appendChild(div);
   div.querySelector('input').focus();
 }
-
 function removeItem(btn) {
   const list = btn.closest('.dynamic-list');
   if (list.children.length > 1) btn.closest('.dynamic-item').remove();
 }
-
 function getListValues(listId) {
   return Array.from(document.querySelectorAll(`#${listId} input`)).map(i => i.value.trim()).filter(Boolean);
 }
-
 function setStatus(msg) {
   const el = document.getElementById('status-msg');
   el.textContent = msg;
   el.classList.add('visible');
 }
 
+// GENERATE CV
 async function generateCV() {
   const nama = document.getElementById('nama').value.trim();
   const email = document.getElementById('email').value.trim();
@@ -309,33 +512,40 @@ async function generateCV() {
   btn.textContent = '⏳ AI sedang menulis CV Anda...';
   setStatus('🤖 Menghubungi AI...');
 
+  const kataKunci = document.getElementById('kata_kunci').value.trim();
   const data = {
     nama, tgl_lahir: document.getElementById('tgl_lahir').value,
     email, telepon: document.getElementById('telepon').value.trim(),
     lokasi: document.getElementById('lokasi').value.trim(),
     linkedin: document.getElementById('linkedin').value.trim(),
-    posisi, ringkasan_user: document.getElementById('ringkasan').value.trim(),
-    pengalaman: getListValues('exp-list'), pendidikan: getListValues('edu-list'),
-    skills: getListValues('skill-list'), bahasa: getListValues('lang-list'),
+    posisi, kata_kunci: kataKunci,
+    pengalaman: getListValues('exp-list'),
+    pendidikan: getListValues('edu-list'),
+    skills: getListValues('skill-list'),
+    bahasa: getListValues('lang-list'),
     sertifikasi: getListValues('cert-list'),
   };
 
   const prompt = `Anda adalah penulis CV profesional Indonesia. Buat CV dalam format JSON. HANYA kembalikan JSON valid tanpa backtick:
+
 NAMA: ${data.nama}
 TANGGAL LAHIR: ${data.tgl_lahir || 'tidak disebutkan'}
 EMAIL: ${data.email}
 TELEPON: ${data.telepon || 'tidak disebutkan'}
 LOKASI: ${data.lokasi || 'tidak disebutkan'}
 LINKEDIN: ${data.linkedin || 'tidak disebutkan'}
-POSISI: ${data.posisi}
-RINGKASAN: ${data.ringkasan_user || 'buatkan 3-4 kalimat profesional'}
+POSISI YANG DITUJU: ${data.posisi}
+KATA KUNCI UNTUK RINGKASAN: ${data.kata_kunci || 'profesional, berdedikasi, berorientasi hasil'}
 PENGALAMAN: ${data.pengalaman.join(' | ') || 'tidak disebutkan'}
 PENDIDIKAN: ${data.pendidikan.join(' | ') || 'tidak disebutkan'}
 SKILLS: ${data.skills.join(', ') || 'tidak disebutkan'}
 BAHASA: ${data.bahasa.join(', ') || 'tidak disebutkan'}
 SERTIFIKASI: ${data.sertifikasi.join(', ') || 'tidak ada'}
-Format JSON:
-{"nama":"","posisi_target":"","email":"","telepon":"","lokasi":"","linkedin":"","usia":"","ringkasan":"","pengalaman":[{"jabatan":"","perusahaan":"","periode":"","deskripsi":["","",""]}],"pendidikan":[{"gelar":"","institusi":"","tahun":""}],"skills":[""],"bahasa":[{"nama":"","level":""}],"sertifikasi":[""]}`;
+
+Untuk field "ringkasan": tulis 3-4 kalimat ringkasan profesional yang kuat berdasarkan KATA KUNCI dan posisi yang dituju. Buat terdengar natural, percaya diri, dan meyakinkan recruiter.
+
+Format JSON yang harus dikembalikan:
+{"nama":"","posisi_target":"","email":"","telepon":"","lokasi":"","linkedin":"","usia":"","ringkasan":"3-4 kalimat profesional berdasarkan kata kunci","pengalaman":[{"jabatan":"","perusahaan":"","periode":"","deskripsi":["","",""]}],"pendidikan":[{"gelar":"","institusi":"","tahun":""}],"skills":[""],"bahasa":[{"nama":"","level":""}],"sertifikasi":[""]}`;
 
   try {
     const res = await fetch('/.netlify/functions/generate', {
@@ -354,6 +564,14 @@ Format JSON:
     if (!jsonMatch) throw new Error('JSON tidak ditemukan');
     const cv = JSON.parse(jsonMatch[0]);
     lastCV = cv;
+
+    // Tampilkan ringkasan preview
+    if (cv.ringkasan) {
+      const preview = document.getElementById('ringkasan-preview');
+      preview.textContent = cv.ringkasan;
+      preview.classList.add('visible');
+    }
+
     renderCV(cv);
     setStatus('✅ CV berhasil dibuat!');
     document.getElementById('cv-actions').style.display = 'flex';
@@ -366,6 +584,7 @@ Format JSON:
   }
 }
 
+// RENDER CV
 function renderCV(cv) {
   const t = activeTemplate;
   const wrapper = document.getElementById('cv-wrapper');
@@ -375,25 +594,25 @@ function renderCV(cv) {
 
   const expHTML = (cv.pengalaman || []).map(e => `
     <div class="cv-exp-item">
-      <div class="cv-exp-role">${e.jabatan || ''}</div>
-      <div class="cv-exp-company">${e.perusahaan || ''}</div>
-      <div class="cv-exp-period">${e.periode || ''}</div>
-      <div class="cv-exp-desc">${(e.deskripsi || []).map(d => `• ${d}`).join('<br>')}</div>
+      <div class="cv-exp-role">${e.jabatan||''}</div>
+      <div class="cv-exp-company">${e.perusahaan||''}</div>
+      <div class="cv-exp-period">${e.periode||''}</div>
+      <div class="cv-exp-desc">${(e.deskripsi||[]).map(d=>`• ${d}`).join('<br>')}</div>
     </div>`).join('');
 
-  const eduHTML = (cv.pendidikan || []).map(e => `
+  const eduHTML = (cv.pendidikan||[]).map(e=>`
     <div class="cv-edu-item">
-      <div class="cv-edu-degree">${e.gelar || ''}</div>
-      <div class="cv-edu-school">${e.institusi || ''}</div>
-      <div class="cv-edu-year">${e.tahun || ''}</div>
+      <div class="cv-edu-degree">${e.gelar||''}</div>
+      <div class="cv-edu-school">${e.institusi||''}</div>
+      <div class="cv-edu-year">${e.tahun||''}</div>
     </div>`).join('');
 
-  const skillHTML = (cv.skills || []).map(s => `<span class="cv-skill-tag">${s}</span>`).join('');
-  const langHTML = (cv.bahasa || []).map(l => `<div class="cv-lang-item"><span>${l.nama}</span><span class="cv-lang-level">${l.level}</span></div>`).join('');
-  const certHTML = (cv.sertifikasi || []).filter(Boolean).length ? `
+  const skillHTML = (cv.skills||[]).map(s=>`<span class="cv-skill-tag">${s}</span>`).join('');
+  const langHTML = (cv.bahasa||[]).map(l=>`<div class="cv-lang-item"><span>${l.nama}</span><span class="cv-lang-level">${l.level}</span></div>`).join('');
+  const certHTML = (cv.sertifikasi||[]).filter(Boolean).length ? `
     <div class="cv-section">
       <div class="cv-section-title-side">Sertifikasi</div>
-      ${(cv.sertifikasi || []).filter(Boolean).map(c => `<div style="font-size:11px;color:#555;margin-bottom:4px">🏅 ${c}</div>`).join('')}
+      ${(cv.sertifikasi||[]).filter(Boolean).map(c=>`<div style="font-size:11px;color:#555;margin-bottom:4px">🏅 ${c}</div>`).join('')}
     </div>` : '';
 
   wrapper.innerHTML = `
@@ -401,27 +620,27 @@ function renderCV(cv) {
       <div class="cv-header-bar">
         ${fotoHTML}
         <div>
-          <div class="cv-name">${cv.nama || ''}</div>
-          <div class="cv-title">${cv.posisi_target || ''}</div>
+          <div class="cv-name">${cv.nama||''}</div>
+          <div class="cv-title">${cv.posisi_target||''}</div>
           <div class="cv-contact-bar">
-            ${cv.email ? `<div class="cv-contact-item">✉ ${cv.email}</div>` : ''}
-            ${cv.telepon ? `<div class="cv-contact-item">📞 ${cv.telepon}</div>` : ''}
-            ${cv.lokasi ? `<div class="cv-contact-item">📍 ${cv.lokasi}</div>` : ''}
-            ${cv.linkedin ? `<div class="cv-contact-item">🔗 ${cv.linkedin}</div>` : ''}
-            ${cv.usia && cv.usia !== 'tidak disebutkan' ? `<div class="cv-contact-item">🎂 ${cv.usia}</div>` : ''}
+            ${cv.email?`<div class="cv-contact-item">✉ ${cv.email}</div>`:''}
+            ${cv.telepon?`<div class="cv-contact-item">📞 ${cv.telepon}</div>`:''}
+            ${cv.lokasi?`<div class="cv-contact-item">📍 ${cv.lokasi}</div>`:''}
+            ${cv.linkedin?`<div class="cv-contact-item">🔗 ${cv.linkedin}</div>`:''}
+            ${cv.usia&&cv.usia!=='tidak disebutkan'?`<div class="cv-contact-item">🎂 ${cv.usia}</div>`:''}
           </div>
         </div>
       </div>
       <div class="cv-body">
         <div>
-          ${skillHTML ? `<div class="cv-section"><div class="cv-section-title-side">Keahlian</div><div class="cv-skill-list">${skillHTML}</div></div>` : ''}
-          ${eduHTML ? `<div class="cv-section"><div class="cv-section-title-side">Pendidikan</div>${eduHTML}</div>` : ''}
-          ${langHTML ? `<div class="cv-section"><div class="cv-section-title-side">Bahasa</div>${langHTML}</div>` : ''}
+          ${skillHTML?`<div class="cv-section"><div class="cv-section-title-side">Keahlian</div><div class="cv-skill-list">${skillHTML}</div></div>`:''}
+          ${eduHTML?`<div class="cv-section"><div class="cv-section-title-side">Pendidikan</div>${eduHTML}</div>`:''}
+          ${langHTML?`<div class="cv-section"><div class="cv-section-title-side">Bahasa</div>${langHTML}</div>`:''}
           ${certHTML}
         </div>
         <div>
-          ${cv.ringkasan ? `<div class="cv-section"><div class="cv-section-title">Profil Profesional</div><div class="cv-summary">${cv.ringkasan}</div></div>` : ''}
-          ${expHTML ? `<div class="cv-section"><div class="cv-section-title">Pengalaman Kerja</div>${expHTML}</div>` : ''}
+          ${cv.ringkasan?`<div class="cv-section"><div class="cv-section-title">Profil Profesional</div><div class="cv-summary">${cv.ringkasan}</div></div>`:''}
+          ${expHTML?`<div class="cv-section"><div class="cv-section-title">Pengalaman Kerja</div>${expHTML}</div>`:''}
         </div>
       </div>
     </div>`;
@@ -436,7 +655,7 @@ function downloadCV() {
 </head><body>${content.outerHTML}</body></html>`;
   const a = document.createElement('a');
   a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
-  a.download = 'CV_' + (document.getElementById('nama').value || 'saya') + '.html';
+  a.download = 'CV_' + (document.getElementById('nama').value||'saya') + '.html';
   a.click();
 }
 </script>
