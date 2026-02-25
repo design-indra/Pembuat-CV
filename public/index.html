@@ -1,172 +1,228 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CV Generator AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#1a1a2e;--paper:#f5f0e8;--gold:#c9a84c;--gold-light:#e8d5a3;--accent:#2d5a8e}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh;display:flex;flex-direction:column}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(201,168,76,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 80%,rgba(45,90,142,.12) 0%,transparent 60%);pointer-events:none;z-index:0}
+  /* ===== THEME VARIABLES ===== */
+  :root {
+    --gold:#c9a84c;--gold-light:#e8d5a3;--accent:#2d5a8e;
+  }
+  [data-theme="dark"] {
+    --bg:#1a1a2e;--bg2:#0f0f22;--surface:rgba(245,240,232,.04);
+    --border:rgba(201,168,76,.15);--text:#f5f0e8;--text2:rgba(245,240,232,.5);
+    --text3:rgba(245,240,232,.25);--card:#0f0f22;--input-bg:rgba(245,240,232,.06);
+    --shadow:rgba(0,0,0,.4);--nav-border:rgba(201,168,76,.15);
+    --footer-border:rgba(201,168,76,.15);--sidebar-bg:#0f0f22;
+  }
+  [data-theme="light"] {
+    --bg:#f0f4f8;--bg2:#ffffff;--surface:rgba(255,255,255,.9);
+    --border:rgba(45,90,142,.15);--text:#1a1a2e;--text2:rgba(26,26,46,.55);
+    --text3:rgba(26,26,46,.3);--card:#ffffff;--input-bg:rgba(26,26,46,.05);
+    --shadow:rgba(0,0,0,.12);--nav-border:rgba(45,90,142,.15);
+    --footer-border:rgba(45,90,142,.1);--sidebar-bg:#ffffff;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;transition:background-color .3s,color .3s,border-color .3s}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+  [data-theme="dark"] body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(201,168,76,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 80%,rgba(45,90,142,.12) 0%,transparent 60%);pointer-events:none;z-index:0}
+  [data-theme="light"] body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(201,168,76,.05) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 80%,rgba(45,90,142,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
 
   /* NAVBAR */
-  nav{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(201,168,76,.15)}
-  .nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--paper) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .nav-logo span{font-size:11px;letter-spacing:3px;display:block;color:var(--gold);opacity:.7;font-family:'DM Sans',sans-serif;-webkit-text-fill-color:var(--gold)}
-  .hamburger{background:none;border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:all .2s}
-  .hamburger:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.6)}
-  .hamburger span{width:22px;height:2px;background:var(--gold);border-radius:2px;display:block;transition:all .3s}
-  .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-  .hamburger.open span:nth-child(2){opacity:0}
-  .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+  nav{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--nav-border);background:var(--bg2);backdrop-filter:blur(10px)}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold)}
+  .nav-logo span{font-size:10px;letter-spacing:3px;display:block;color:var(--gold);opacity:.7;font-family:'DM Sans',sans-serif}
+  .nav-right{display:flex;align-items:center;gap:10px}
 
-  /* SIDEBAR MENU */
-  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+  /* THEME TOGGLE */
+  .theme-toggle{background:var(--input-bg);border:1px solid var(--border);border-radius:30px;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);font-family:'DM Sans',sans-serif;transition:all .2s}
+  .theme-toggle:hover{border-color:var(--gold);color:var(--gold)}
+  .theme-toggle .toggle-track{width:36px;height:20px;background:var(--border);border-radius:20px;position:relative;transition:all .3s}
+  [data-theme="light"] .theme-toggle .toggle-track{background:var(--gold)}
+  .theme-toggle .toggle-thumb{width:14px;height:14px;background:var(--text2);border-radius:50%;position:absolute;top:3px;left:3px;transition:all .3s}
+  [data-theme="light"] .theme-toggle .toggle-thumb{left:19px;background:white}
+
+  .hamburger{background:none;border:1px solid var(--border);border-radius:10px;padding:7px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:all .2s}
+  .hamburger:hover{background:rgba(201,168,76,.1);border-color:var(--gold)}
+  .hamburger span{width:20px;height:2px;background:var(--gold);border-radius:2px;display:block;transition:all .3s}
+  .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+
+  /* SIDEBAR */
+  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
   .sidebar-overlay.open{opacity:1;pointer-events:all}
-  .sidebar{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:#0f0f22;border-left:1px solid rgba(201,168,76,.2);z-index:201;transition:right .3s ease;overflow-y:auto;display:flex;flex-direction:column}
+  .sidebar{position:fixed;top:0;right:-310px;width:290px;height:100vh;background:var(--sidebar-bg);border-left:1px solid var(--border);z-index:201;transition:right .3s;overflow-y:auto;display:flex;flex-direction:column;box-shadow:-10px 0 40px var(--shadow)}
   .sidebar.open{right:0}
-  .sidebar-header{padding:20px 20px 16px;border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between}
-  .sidebar-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem}
-  .sidebar-close{background:none;border:none;color:var(--paper);font-size:22px;cursor:pointer;opacity:.6;padding:4px}
-  .sidebar-close:hover{opacity:1}
-  .sidebar-menu{flex:1;padding:8px 0}
-  .sidebar-item{padding:0}
-  .sidebar-btn{width:100%;text-align:left;background:none;border:none;padding:16px 20px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;border-bottom:1px solid rgba(255,255,255,.04)}
+  .sidebar-header{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .sidebar-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.05rem}
+  .sidebar-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px}
+  .sidebar-close:hover{color:var(--text)}
+  .sidebar-btn{width:100%;text-align:left;background:none;border:none;padding:14px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s;border-bottom:1px solid var(--border)}
   .sidebar-btn:hover{background:rgba(201,168,76,.08);color:var(--gold)}
-  .sidebar-btn .icon{font-size:18px;width:24px;text-align:center}
-  .sidebar-content{display:none;padding:16px 20px 20px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:rgba(245,240,232,.7);line-height:1.7}
+  .sidebar-btn .icon{font-size:16px;width:22px;text-align:center}
+  .sidebar-content{display:none;padding:14px 18px 16px;background:var(--input-bg);border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.7}
   .sidebar-content.open{display:block}
   .sidebar-content a{color:var(--gold);text-decoration:none}
-  .sidebar-content a:hover{text-decoration:underline}
-  .sidebar-content strong{color:var(--paper);font-weight:600}
+  .sidebar-content strong{color:var(--text);font-weight:600}
   .rekening-box{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-top:10px;text-align:center}
-  .rekening-box .bank{font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px}
-  .rekening-box .rek-num{font-size:22px;font-weight:700;color:var(--paper);letter-spacing:3px;margin:4px 0}
-  .rekening-box .rek-name{font-size:12px;color:rgba(245,240,232,.6)}
+  .rekening-box .bank{font-size:16px;font-weight:700;color:var(--gold);letter-spacing:2px}
+  .rekening-box .rek-num{font-size:20px;font-weight:700;color:var(--text);letter-spacing:3px;margin:4px 0}
+  .rekening-box .rek-name{font-size:11px;color:var(--text2)}
 
   /* HEADER */
-  header{position:relative;z-index:10;text-align:center;padding:32px 20px 20px}
+  header{position:relative;z-index:10;text-align:center;padding:28px 20px 18px}
   .logo-tag{display:inline-block;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;opacity:.8}
-  header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,var(--paper) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  header p{margin-top:8px;color:rgba(245,240,232,.5);font-size:.88rem}
+  header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,var(--text) 30%,var(--gold) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  header p{margin-top:6px;color:var(--text2);font-size:.88rem}
 
   /* CONTAINER */
-  .container{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:24px 16px 40px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;flex:1}
+  .container{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:22px 16px 40px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;flex:1}
   @media(max-width:800px){.container{grid-template-columns:1fr}}
 
-  /* FORM */
-  .form-panel{background:rgba(245,240,232,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:22px;backdrop-filter:blur(10px)}
-  .panel-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
-  .panel-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.2)}
-  .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:8px;margin-top:16px}
+  /* FORM PANEL */
+  .form-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;backdrop-filter:blur(10px)}
+  [data-theme="light"] .form-panel{box-shadow:0 4px 24px var(--shadow)}
+  .panel-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .panel-title::after{content:'';flex:1;height:1px;background:var(--border)}
+  .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px;margin-top:16px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-  label{font-size:12px;color:rgba(245,240,232,.5)}
-  input,select,textarea{background:rgba(245,240,232,.06);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 13px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:14px;transition:all .2s;width:100%}
-  input::placeholder,textarea::placeholder{color:rgba(245,240,232,.2)}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(201,168,76,.5);background:rgba(245,240,232,.08)}
-  select option{background:var(--ink)}
-  textarea{resize:vertical;min-height:70px}
+  .form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+  label{font-size:12px;color:var(--text2)}
+  input,select,textarea{background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;transition:all .2s;width:100%}
+  input::placeholder,textarea::placeholder{color:var(--text3)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);background:var(--input-bg)}
+  [data-theme="light"] select option{background:white;color:#1a1a2e}
+  [data-theme="dark"] select option{background:#1a1a2e}
+  textarea{resize:vertical;min-height:68px}
 
   /* RINGKASAN AI */
-  .ringkasan-box{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px;margin-bottom:4px}
-  .ringkasan-hint{font-size:11px;color:rgba(245,240,232,.45);margin-bottom:8px;line-height:1.5}
-  .ringkasan-hint strong{color:var(--gold);opacity:.8}
-  .keyword-input{width:100%;background:rgba(245,240,232,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:9px 12px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:13px}
+  .ringkasan-box{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:13px;margin-bottom:4px}
+  .ringkasan-hint{font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5}
+  .ringkasan-hint strong{color:var(--gold);opacity:.9}
+  .keyword-input{width:100%;background:var(--input-bg);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px}
   .keyword-input:focus{outline:none;border-color:var(--gold)}
-  .keyword-input::placeholder{color:rgba(245,240,232,.25)}
-  .ringkasan-preview{margin-top:10px;font-size:12px;color:rgba(245,240,232,.7);line-height:1.6;background:rgba(245,240,232,.04);border-radius:8px;padding:10px;display:none;border-left:2px solid var(--gold)}
+  .keyword-input::placeholder{color:var(--text3)}
+  .ringkasan-preview{margin-top:10px;font-size:12px;color:var(--text2);line-height:1.6;background:var(--input-bg);border-radius:8px;padding:10px;display:none;border-left:2px solid var(--gold)}
   .ringkasan-preview.visible{display:block}
 
   /* FOTO */
-  .foto-upload-area{border:2px dashed rgba(201,168,76,.3);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:76px}
-  .foto-upload-area:hover{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.05)}
-  .foto-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 6px;display:block}
-  .foto-placeholder{color:rgba(245,240,232,.4);font-size:12px}
-  .foto-placeholder span{font-size:24px;display:block;margin-bottom:4px}
+  .foto-upload-area{border:2px dashed var(--border);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:72px}
+  .foto-upload-area:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
+  .foto-preview{width:78px;height:78px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 6px;display:block}
+  .foto-placeholder{color:var(--text2);font-size:12px}
+  .foto-placeholder span{font-size:22px;display:block;margin-bottom:4px}
   #foto-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-  .btn-hapus-foto{font-size:11px;color:#e8a0a0;background:rgba(142,45,45,.2);border:1px solid rgba(142,45,45,.3);border-radius:6px;padding:4px 12px;cursor:pointer;margin-top:6px;font-family:'DM Sans',sans-serif;display:none}
+  .btn-hapus-foto{font-size:11px;color:#e8a0a0;background:rgba(142,45,45,.15);border:1px solid rgba(142,45,45,.3);border-radius:6px;padding:4px 12px;cursor:pointer;margin-top:6px;font-family:'DM Sans',sans-serif;display:none}
 
   /* TEMPLATE */
-  .template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .template-card{border:2px solid rgba(201,168,76,.15);border-radius:12px;padding:8px 6px;cursor:pointer;text-align:center;transition:all .2s;background:rgba(245,240,232,.03)}
-  .template-card:hover{border-color:rgba(201,168,76,.4)}
-  .template-card.active{border-color:var(--gold);background:rgba(201,168,76,.1)}
-  .template-thumb{width:100%;height:50px;border-radius:6px;margin-bottom:5px;position:relative;overflow:hidden}
+  .template-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .template-card{border:2px solid var(--border);border-radius:10px;padding:8px 5px;cursor:pointer;text-align:center;transition:all .2s;background:var(--input-bg)}
+  .template-card:hover{border-color:var(--gold)}
+  .template-card.active{border-color:var(--gold);background:rgba(201,168,76,.08)}
+  .template-thumb{width:100%;height:44px;border-radius:6px;margin-bottom:5px;position:relative;overflow:hidden}
   .t1-thumb{background:linear-gradient(135deg,#1a1a2e 40%,#2d3561 100%)}
   .t2-thumb{background:linear-gradient(135deg,#1a4a2e 40%,#2d6b45 100%)}
   .t3-thumb{background:linear-gradient(135deg,#4a1a2e 40%,#8e2d5a 100%)}
-  .template-thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:white;opacity:.9}
-  .template-name{font-size:10px;color:rgba(245,240,232,.7);font-weight:500}
+  .t4-thumb{background:linear-gradient(135deg,#f8f8f8 0%,#e8e8e8 100%);border:1px solid #ddd}
+  .template-thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:38%;background:white;opacity:.9}
+  .t4-thumb::after{background:#2d5a8e;opacity:.15}
+  .template-name{font-size:9px;color:var(--text2);font-weight:500}
   .template-card.active .template-name{color:var(--gold)}
 
   /* DYNAMIC */
   .dynamic-list{display:flex;flex-direction:column;gap:7px}
   .dynamic-item{display:flex;gap:7px;align-items:center}
   .dynamic-item input{flex:1}
-  .btn-remove{background:rgba(142,45,45,.2);border:1px solid rgba(142,45,45,.3);color:#e8a0a0;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .btn-remove:hover{background:rgba(142,45,45,.4)}
-  .btn-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gold);background:rgba(201,168,76,.08);border:1px dashed rgba(201,168,76,.3);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .2s;margin-top:5px;font-family:'DM Sans',sans-serif}
-  .btn-add:hover{background:rgba(201,168,76,.15)}
-  .btn-generate{width:100%;padding:14px;margin-top:18px;background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:var(--ink);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s}
-  .btn-generate:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.35)}
+  .btn-remove{background:rgba(142,45,45,.15);border:1px solid rgba(142,45,45,.3);color:#e8a0a0;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .btn-remove:hover{background:rgba(142,45,45,.35)}
+  .btn-add{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--gold);background:rgba(201,168,76,.06);border:1px dashed rgba(201,168,76,.3);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .2s;margin-top:5px;font-family:'DM Sans',sans-serif}
+  .btn-add:hover{background:rgba(201,168,76,.12)}
+  .btn-generate{width:100%;padding:14px;margin-top:18px;background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:#1a1a2e;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s}
+  .btn-generate:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.3)}
   .btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .status-msg{text-align:center;font-size:13px;color:var(--gold);margin-top:10px;min-height:20px;opacity:0;transition:opacity .3s}
   .status-msg.visible{opacity:1}
 
   /* CV PANEL */
   .cv-panel{position:sticky;top:20px}
-  .cv-wrapper{background:white;border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);min-height:400px;display:flex;align-items:center;justify-content:center}
+  .cv-wrapper{background:white;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px var(--shadow);min-height:400px;display:flex;align-items:center;justify-content:center}
   .cv-placeholder{text-align:center;padding:60px 30px;color:rgba(26,26,46,.3)}
-  .cv-placeholder p{font-size:14px;color:rgba(26,26,46,.4);margin-top:12px}
+  .cv-placeholder p{font-size:13px;color:rgba(26,26,46,.4);margin-top:10px}
   #cv-content{width:100%;color:#1a1a2e}
   .cv-actions{display:flex;gap:10px;margin-top:12px}
   .btn-action{flex:1;padding:11px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
-  .btn-download{background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:var(--ink)}
-  .btn-print{background:rgba(245,240,232,.08);border:1px solid rgba(201,168,76,.2)!important;color:var(--paper)}
+  .btn-download{background:linear-gradient(135deg,var(--gold) 0%,#a07830 100%);color:#1a1a2e}
+  .btn-print{background:var(--input-bg);border:1px solid var(--border)!important;color:var(--text)}
 
-  /* TEMPLATES */
-  .t1 .cv-header-bar{background:linear-gradient(135deg,#1a1a2e,#2d3561);padding:26px;color:white;display:flex;gap:18px;align-items:center}
-  .t1 .cv-foto{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;flex-shrink:0}
-  .t1 .cv-foto-placeholder{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(201,168,76,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  /* ===== TEMPLATE 1: NAVY CLASSIC ===== */
+  .t1 .cv-header-bar{background:linear-gradient(135deg,#1a1a2e,#2d3561);padding:24px;color:white;display:flex;gap:16px;align-items:center}
+  .t1 .cv-foto,.t1 .cv-foto-placeholder{width:74px;height:74px;border-radius:50%;flex-shrink:0}
+  .t1 .cv-foto{object-fit:cover;border:3px solid #c9a84c}
+  .t1 .cv-foto-placeholder{background:rgba(255,255,255,.1);border:3px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:26px}
   .t1 .cv-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white}
-  .t1 .cv-title{color:#e8d5a3;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
-  .t1 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d5a8e;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #2d5a8e}
-  .t1 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8a7040;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #c9a84c}
-  .t1 .cv-skill-tag{background:rgba(45,90,142,.1);color:#2d5a8e;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
-  .t1 .cv-lang-level{color:#2d5a8e;font-weight:500}
+  .t1 .cv-title{color:#e8d5a3;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+  .t1 .cv-st{font-size:8px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:7px;padding-bottom:4px}
+  .t1 .cv-st-main{color:#2d5a8e;border-bottom:2px solid #2d5a8e}
+  .t1 .cv-st-side{color:#8a7040;border-bottom:2px solid #c9a84c}
+  .t1 .cv-skill-tag{background:rgba(45,90,142,.1);color:#2d5a8e;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500}
+  .t1 .cv-ll{color:#2d5a8e;font-weight:500}
 
-  .t2 .cv-header-bar{background:linear-gradient(135deg,#1a4a2e,#2d6b45);padding:26px;color:white;display:flex;gap:18px;align-items:center}
-  .t2 .cv-foto{width:76px;height:76px;border-radius:12px;object-fit:cover;border:3px solid #7ecca0;flex-shrink:0}
-  .t2 .cv-foto-placeholder{width:76px;height:76px;border-radius:12px;background:rgba(255,255,255,.1);border:3px solid rgba(126,204,160,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  /* ===== TEMPLATE 2: GREEN MODERN ===== */
+  .t2 .cv-header-bar{background:linear-gradient(135deg,#1a4a2e,#2d6b45);padding:24px;color:white;display:flex;gap:16px;align-items:center}
+  .t2 .cv-foto,.t2 .cv-foto-placeholder{width:74px;height:74px;border-radius:12px;flex-shrink:0}
+  .t2 .cv-foto{object-fit:cover;border:3px solid #7ecca0}
+  .t2 .cv-foto-placeholder{background:rgba(255,255,255,.1);border:3px solid rgba(126,204,160,.4);display:flex;align-items:center;justify-content:center;font-size:26px}
   .t2 .cv-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:white}
-  .t2 .cv-title{color:#a8e6c3;font-size:11px;letter-spacing:1px;margin-top:4px;font-weight:300}
-  .t2 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d6b45;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #2d6b45}
-  .t2 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#2d6b45;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #7ecca0}
-  .t2 .cv-skill-tag{background:rgba(45,107,69,.1);color:#2d6b45;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
-  .t2 .cv-lang-level{color:#2d6b45;font-weight:500}
+  .t2 .cv-title{color:#a8e6c3;font-size:11px;letter-spacing:1px;margin-top:3px;font-weight:300}
+  .t2 .cv-st{font-size:8px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:7px;padding-bottom:4px}
+  .t2 .cv-st-main{color:#2d6b45;border-bottom:2px solid #2d6b45}
+  .t2 .cv-st-side{color:#2d6b45;border-bottom:2px solid #7ecca0}
+  .t2 .cv-skill-tag{background:rgba(45,107,69,.1);color:#2d6b45;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500}
+  .t2 .cv-ll{color:#2d6b45;font-weight:500}
 
-  .t3 .cv-header-bar{background:linear-gradient(135deg,#4a1a2e,#8e2d5a);padding:26px;color:white;display:flex;gap:18px;align-items:center}
-  .t3 .cv-foto{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #f0a0c0;flex-shrink:0}
-  .t3 .cv-foto-placeholder{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(240,160,192,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+  /* ===== TEMPLATE 3: ROSE ELEGANT ===== */
+  .t3 .cv-header-bar{background:linear-gradient(135deg,#4a1a2e,#8e2d5a);padding:24px;color:white;display:flex;gap:16px;align-items:center}
+  .t3 .cv-foto,.t3 .cv-foto-placeholder{width:74px;height:74px;border-radius:50%;flex-shrink:0}
+  .t3 .cv-foto{object-fit:cover;border:3px solid #f0a0c0}
+  .t3 .cv-foto-placeholder{background:rgba(255,255,255,.1);border:3px solid rgba(240,160,192,.4);display:flex;align-items:center;justify-content:center;font-size:26px}
   .t3 .cv-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white;font-style:italic}
-  .t3 .cv-title{color:#f0c0d4;font-size:11px;letter-spacing:2px;margin-top:4px}
-  .t3 .cv-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8e2d5a;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #8e2d5a}
-  .t3 .cv-section-title-side{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8e2d5a;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #f0a0c0}
-  .t3 .cv-skill-tag{background:rgba(142,45,90,.1);color:#8e2d5a;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500}
-  .t3 .cv-lang-level{color:#8e2d5a;font-weight:500}
+  .t3 .cv-title{color:#f0c0d4;font-size:11px;letter-spacing:2px;margin-top:3px}
+  .t3 .cv-st{font-size:8px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:7px;padding-bottom:4px}
+  .t3 .cv-st-main{color:#8e2d5a;border-bottom:2px solid #8e2d5a}
+  .t3 .cv-st-side{color:#8e2d5a;border-bottom:2px solid #f0a0c0}
+  .t3 .cv-skill-tag{background:rgba(142,45,90,.1);color:#8e2d5a;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500}
+  .t3 .cv-ll{color:#8e2d5a;font-weight:500}
+
+  /* ===== TEMPLATE 4: WHITE FORMAL ===== */
+  .t4 .cv-header-bar{background:white;padding:24px 28px;border-bottom:3px solid #2d5a8e;display:flex;gap:18px;align-items:center}
+  .t4 .cv-foto,.t4 .cv-foto-placeholder{width:80px;height:80px;border-radius:6px;flex-shrink:0}
+  .t4 .cv-foto{object-fit:cover;border:2px solid #2d5a8e}
+  .t4 .cv-foto-placeholder{background:#f0f4f8;border:2px solid #2d5a8e;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .t4 .cv-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:#1a1a2e}
+  .t4 .cv-title{color:#2d5a8e;font-size:12px;letter-spacing:1px;margin-top:3px;font-weight:600;text-transform:uppercase}
+  .t4 .cv-contact-bar{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+  .t4 .cv-contact-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
+  .t4 .cv-body{padding:20px 28px;display:grid;grid-template-columns:1fr 2fr;gap:20px;font-family:'DM Sans',sans-serif;background:white}
+  .t4 .cv-sidebar{background:#f8fafc;border-radius:10px;padding:16px}
+  .t4 .cv-st{font-size:8px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:7px;padding-bottom:4px}
+  .t4 .cv-st-main{color:#1a1a2e;border-bottom:2px solid #2d5a8e}
+  .t4 .cv-st-side{color:#2d5a8e;border-bottom:1px solid #d0dce8}
+  .t4 .cv-skill-tag{background:#e8f0f8;color:#2d5a8e;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;border:1px solid #c8d8e8}
+  .t4 .cv-ll{color:#2d5a8e;font-weight:500}
 
   /* SHARED CV */
   .cv-contact-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
   .cv-contact-item{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.75)}
-  .cv-body{padding:20px 26px;display:grid;grid-template-columns:1fr 2fr;gap:20px;font-family:'DM Sans',sans-serif}
-  .cv-section{margin-bottom:16px}
+  .cv-body{padding:20px 24px;display:grid;grid-template-columns:1fr 2fr;gap:18px;font-family:'DM Sans',sans-serif}
+  .cv-section{margin-bottom:15px}
   .cv-summary{font-size:12px;line-height:1.7;color:#444}
-  .cv-exp-item{margin-bottom:13px}
+  .cv-exp-item{margin-bottom:12px}
   .cv-exp-role{font-weight:600;font-size:13px;color:#1a1a2e}
-  .cv-exp-company{font-size:12px;color:#666;font-weight:500}
+  .cv-exp-company{font-size:12px;color:#555;font-weight:500}
   .cv-exp-period{font-size:11px;color:#999;margin-bottom:4px}
   .cv-exp-desc{font-size:11px;color:#555;line-height:1.6}
   .cv-skill-list{display:flex;flex-wrap:wrap;gap:5px}
@@ -177,12 +233,12 @@
   .cv-lang-item{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;color:#444}
 
   /* FOOTER */
-  footer{position:relative;z-index:10;border-top:1px solid rgba(201,168,76,.15);padding:24px 20px;text-align:center}
-  .footer-logo{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:6px}
-  .footer-text{font-size:12px;color:rgba(245,240,232,.4);line-height:1.7}
+  footer{position:relative;z-index:10;border-top:1px solid var(--footer-border);padding:20px;text-align:center;background:var(--bg2)}
+  .footer-logo{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--gold);margin-bottom:5px}
+  .footer-text{font-size:11px;color:var(--text2);line-height:1.7}
   .footer-text a{color:var(--gold);text-decoration:none;opacity:.8}
   .footer-text a:hover{opacity:1;text-decoration:underline}
-  .footer-divider{width:40px;height:1px;background:rgba(201,168,76,.3);margin:12px auto}
+  .footer-divider{width:40px;height:1px;background:var(--border);margin:10px auto}
 
   @media print{body{background:white}nav,.form-panel,header,.cv-actions,footer{display:none}.container{display:block;padding:0}.cv-panel{position:static}.cv-wrapper{box-shadow:none;border-radius:0}}
 </style>
@@ -191,13 +247,17 @@
 
 <!-- NAVBAR -->
 <nav>
-  <div class="nav-logo">
-    CV Generator
-    <span>✦ Powered by islamic digital app</span>
+  <div class="nav-logo">CV Generator <span>✦ AI-Powered</span></div>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+      <span id="theme-icon">🌙</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span id="theme-label">Dark</span>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
 </nav>
 
 <!-- SIDEBAR -->
@@ -207,85 +267,33 @@
     <div class="sidebar-title">Menu</div>
     <button class="sidebar-close" onclick="closeSidebar()">✕</button>
   </div>
-  <div class="sidebar-menu">
+  <div>
+    <div><button class="sidebar-btn" onclick="toggleMenu('tentang')"><span class="icon">ℹ️</span>Tentang Aplikasi</button>
+    <div class="sidebar-content" id="tentang"><strong>CV Generator AI</strong><br><br>Aplikasi ini dibuat sebagai tools yang memudahkan siapa saja untuk membuat CV profesional secara instan tanpa perlu keahlian desain atau menulis khusus.<br><br>Cukup masukkan data diri Anda, pilih template favorit, dan biarkan AI menulis ringkasan profesional secara otomatis.<br><br>Tersedia 4 pilihan template CV elegan, upload foto dari HP, dan hasil CV bisa diunduh atau dicetak kapan saja.<br><br><strong>Dibuat dengan ❤️ untuk membantu pencari kerja Indonesia.</strong></div></div>
 
-    <div class="sidebar-item">
-      <button class="sidebar-btn" onclick="toggleMenu('tentang')">
-        <span class="icon">ℹ️</span> Tentang Aplikasi
-      </button>
-      <div class="sidebar-content" id="tentang">
-        <strong>CV Generator AI</strong><br><br>
-        Aplikasi ini dibuat sebagai tools yang memudahkan siapa saja untuk membuat CV profesional secara instan tanpa perlu keahlian desain atau menulis khusus.<br><br>
-        Cukup masukkan data diri Anda, pilih template favorit, dan biarkan AI kami menulis ringkasan profesional yang menarik secara otomatis.<br><br>
-        Tersedia 3 pilihan template CV yang elegan, fitur upload foto langsung dari galeri HP, dan hasil CV dapat diunduh atau dicetak kapan saja.<br><br>
-        <strong>Dibuat dengan ❤️ untuk membantu para pencari kerja Indonesia.</strong>
-      </div>
-    </div>
+    <div><button class="sidebar-btn" onclick="toggleMenu('privasi')"><span class="icon">🔒</span>Kebijakan Privasi</button>
+    <div class="sidebar-content" id="privasi"><strong>Privasi Anda Terjaga</strong><br><br>• Web ini <strong>tidak menyimpan</strong> data pribadi pengguna di server manapun.<br><br>• Semua data hanya diproses sementara untuk menghasilkan CV dan tidak disimpan.<br><br>• Foto yang diupload hanya digunakan secara lokal di browser dan tidak dikirim ke server.<br><br>• Kami tidak menggunakan cookies pelacak atau analitik pihak ketiga.<br><br>• Data Anda sepenuhnya aman dan privat.</div></div>
 
-    <div class="sidebar-item">
-      <button class="sidebar-btn" onclick="toggleMenu('privasi')">
-        <span class="icon">🔒</span> Kebijakan Privasi
-      </button>
-      <div class="sidebar-content" id="privasi">
-        <strong>Privasi Anda Terjaga</strong><br><br>
-        • Web ini <strong>tidak menyimpan</strong> data pribadi pengguna di server manapun.<br><br>
-        • Semua data yang Anda masukkan hanya diproses sementara untuk menghasilkan CV dan tidak disimpan.<br><br>
-        • Foto yang Anda upload hanya digunakan secara lokal di browser Anda dan tidak dikirim ke server.<br><br>
-        • Kami tidak menggunakan cookies pelacak atau alat analitik pihak ketiga.<br><br>
-        • Data Anda sepenuhnya aman dan privat.
-      </div>
-    </div>
+    <div><button class="sidebar-btn" onclick="toggleMenu('disclaimer')"><span class="icon">📋</span>Ketentuan & Disclaimer</button>
+    <div class="sidebar-content" id="disclaimer"><strong>Ketentuan Penggunaan</strong><br><br>• Konten ringkasan dan deskripsi CV <strong>dihasilkan oleh AI</strong>. Pengguna bertanggung jawab memeriksa kebenaran isinya.<br><br>• Aplikasi ini disediakan "sebagaimana adanya" tanpa jaminan keberhasilan lamaran kerja.<br><br>• Penggunaan hasil CV sepenuhnya menjadi tanggung jawab pengguna.<br><br>• Dengan menggunakan aplikasi ini, Anda menyetujui ketentuan di atas.</div></div>
 
-    <div class="sidebar-item">
-      <button class="sidebar-btn" onclick="toggleMenu('disclaimer')">
-        <span class="icon">📋</span> Ketentuan & Disclaimer
-      </button>
-      <div class="sidebar-content" id="disclaimer">
-        <strong>Ketentuan Penggunaan</strong><br><br>
-        • Konten ringkasan dan deskripsi CV <strong>dihasilkan oleh AI</strong> (Groq/LLaMA). Pengguna bertanggung jawab untuk memeriksa dan memverifikasi kebenaran isinya sebelum digunakan.<br><br>
-        • Aplikasi ini disediakan "sebagaimana adanya" tanpa jaminan atas keberhasilan lamaran kerja.<br><br>
-        • Penggunaan hasil CV sepenuhnya menjadi tanggung jawab pengguna.<br><br>
-        • Kami berhak memperbarui ketentuan ini sewaktu-waktu.<br><br>
-        • Dengan menggunakan aplikasi ini, Anda menyetujui ketentuan di atas.
-      </div>
-    </div>
+    <div><button class="sidebar-btn" onclick="toggleMenu('kontak')"><span class="icon">✉️</span>Kontak</button>
+    <div class="sidebar-content" id="kontak"><strong>Hubungi Kami</strong><br><br>Ada pertanyaan, saran, atau masukan?<br><br>📧 Email: <a href="mailto:mholis1991@gmail.com">mholis1991@gmail.com</a><br><br>Kami akan membalas dalam 1-2 hari kerja.</div></div>
 
-    <div class="sidebar-item">
-      <button class="sidebar-btn" onclick="toggleMenu('kontak')">
-        <span class="icon">✉️</span> Kontak
-      </button>
-      <div class="sidebar-content" id="kontak">
-        <strong>Hubungi Kami</strong><br><br>
-        Ada pertanyaan, saran, atau masukan? Jangan ragu untuk menghubungi kami:<br><br>
-        📧 Email: <a href="mailto:mholis1991@gmail.com">mholis1991@gmail.com</a><br><br>
-        Kami akan berusaha membalas dalam 1-2 hari kerja.
-      </div>
-    </div>
-
-    <div class="sidebar-item">
-      <button class="sidebar-btn" onclick="toggleMenu('donasi')">
-        <span class="icon">💛</span> Donasi Pengembangan
-      </button>
-      <div class="sidebar-content" id="donasi">
-        <strong>Dukung Pengembangan Aplikasi</strong><br><br>
-        Aplikasi ini dikembangkan secara mandiri. Biaya API AI memerlukan dukungan agar tetap gratis untuk semua pengguna.<br><br>
-        Jika aplikasi ini bermanfaat, Anda bisa berdonasi berapapun melalui:<br><br>
-        <div class="rekening-box">
-          <div class="rek-name">Transfer via</div>
-          <div class="bank">🏦 BCA</div>
-          <div class="rek-num">6095055005</div>
-          <div class="rek-name">a.n <strong>Muhamad Holis</strong></div>
-        </div>
-        <br>Terima kasih atas dukungan Anda! 🙏
-      </div>
-    </div>
-
+    <div><button class="sidebar-btn" onclick="toggleMenu('donasi')"><span class="icon">💛</span>Donasi Pengembangan</button>
+    <div class="sidebar-content" id="donasi"><strong>Dukung Pengembangan Aplikasi</strong><br><br>Aplikasi ini dikembangkan secara mandiri. Biaya API AI memerlukan dukungan agar tetap gratis.<br><br>Donasi melalui:<br><br>
+    <div class="rekening-box">
+      <div class="rek-name">Transfer via</div>
+      <div class="bank">🏦 BCA</div>
+      <div class="rek-num">6095055005</div>
+      <div class="rek-name">a.n <strong>Muhamad Holis</strong></div>
+    </div><br>Terima kasih atas dukungan Anda! 🙏</div></div>
   </div>
 </div>
 
 <!-- HEADER -->
 <header>
-  <div class="logo-tag">✦ CV Builder</div>
+  <div class="logo-tag">✦ AI-Powered CV Builder</div>
   <h1>CV Generator AI</h1>
   <p>Isi data Anda — AI otomatis menulis CV profesional lengkap</p>
 </header>
@@ -295,38 +303,37 @@
   <div class="form-panel">
     <div class="panel-title">Data Diri</div>
 
-    <!-- FOTO -->
     <div class="section-label">📷 Foto Profil</div>
-    <div class="foto-upload-area" id="foto-area" onclick="document.getElementById('foto-input').click()">
+    <div class="foto-upload-area" onclick="document.getElementById('foto-input').click()">
       <input type="file" id="foto-input" accept="image/*" onchange="handleFoto(event)">
-      <div id="foto-placeholder" class="foto-placeholder">
-        <span>📷</span>Tap untuk upload foto dari galeri HP
-      </div>
+      <div id="foto-placeholder" class="foto-placeholder"><span>📷</span>Tap untuk upload foto dari galeri HP</div>
       <div id="foto-preview-wrap" style="display:none">
         <img id="foto-preview" class="foto-preview" src="" alt="Foto">
-        <div style="font-size:11px;color:rgba(245,240,232,.5)">Tap untuk ganti foto</div>
+        <div style="font-size:11px;color:var(--text2)">Tap untuk ganti foto</div>
       </div>
     </div>
     <button class="btn-hapus-foto" id="btn-hapus-foto" onclick="hapusFoto(event)">× Hapus Foto</button>
 
-    <!-- TEMPLATE -->
     <div class="section-label">🎨 Pilih Template</div>
     <div class="template-grid">
       <div class="template-card active" onclick="pilihTemplate(1)" id="tpl-1">
         <div class="template-thumb t1-thumb"></div>
-        <div class="template-name">🔵 Navy Classic</div>
+        <div class="template-name">🔵 Navy</div>
       </div>
       <div class="template-card" onclick="pilihTemplate(2)" id="tpl-2">
         <div class="template-thumb t2-thumb"></div>
-        <div class="template-name">🟢 Green Modern</div>
+        <div class="template-name">🟢 Green</div>
       </div>
       <div class="template-card" onclick="pilihTemplate(3)" id="tpl-3">
         <div class="template-thumb t3-thumb"></div>
-        <div class="template-name">🌸 Rose Elegant</div>
+        <div class="template-name">🌸 Rose</div>
+      </div>
+      <div class="template-card" onclick="pilihTemplate(4)" id="tpl-4">
+        <div class="template-thumb t4-thumb"></div>
+        <div class="template-name">⬜ Formal</div>
       </div>
     </div>
 
-    <!-- DATA PRIBADI -->
     <div class="section-label">Informasi Pribadi</div>
     <div class="form-row">
       <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="nama" placeholder="Budi Santoso"/></div>
@@ -341,47 +348,40 @@
       <div class="form-group"><label>LinkedIn / Portfolio</label><input type="text" id="linkedin" placeholder="linkedin.com/in/nama"/></div>
     </div>
 
-    <!-- KARIR -->
     <div class="section-label">Karir</div>
     <div class="form-group"><label>Posisi yang Dituju *</label><input type="text" id="posisi" placeholder="Software Engineer, Marketing Manager, dll."/></div>
 
-    <!-- RINGKASAN AI -->
     <div class="section-label">✨ Ringkasan Diri (Ditulis oleh AI)</div>
     <div class="ringkasan-box">
-      <div class="ringkasan-hint">Masukkan <strong>kata kunci</strong> tentang diri Anda, AI akan menulis ringkasan profesional secara otomatis saat Generate CV.<br>Contoh: <em>5 tahun pengalaman, leadership, inovatif, target-oriented</em></div>
-      <input type="text" class="keyword-input" id="kata_kunci" placeholder="Ketik kata kunci... misal: kreatif, berpengalaman, komunikatif, detail">
+      <div class="ringkasan-hint">Masukkan <strong>kata kunci</strong> tentang diri Anda — AI akan menulis ringkasan profesional otomatis.<br>Contoh: <em>5 tahun pengalaman, leadership, inovatif, target-oriented</em></div>
+      <input type="text" class="keyword-input" id="kata_kunci" placeholder="Ketik kata kunci... misal: kreatif, berpengalaman, komunikatif">
       <div class="ringkasan-preview" id="ringkasan-preview"></div>
     </div>
 
-    <!-- PENGALAMAN -->
     <div class="section-label">Pengalaman Kerja</div>
     <div class="dynamic-list" id="exp-list">
       <div class="dynamic-item"><input type="text" placeholder="2020–2023 | Software Engineer | PT Maju Jaya"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('exp-list','2021–2024 | Data Analyst | Startup XYZ')">+ Tambah Pengalaman</button>
 
-    <!-- PENDIDIKAN -->
     <div class="section-label">Pendidikan</div>
     <div class="dynamic-list" id="edu-list">
       <div class="dynamic-item"><input type="text" placeholder="2016–2020 | S1 Teknik Informatika | Universitas Indonesia"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('edu-list','2012–2016 | SMA Negeri 1 Jakarta')">+ Tambah Pendidikan</button>
 
-    <!-- SKILLS -->
     <div class="section-label">Keahlian (Skills)</div>
     <div class="dynamic-list" id="skill-list">
       <div class="dynamic-item"><input type="text" placeholder="JavaScript, Python, React..."/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('skill-list','Project Management, Komunikasi...')">+ Tambah Skill</button>
 
-    <!-- BAHASA -->
     <div class="section-label">Bahasa yang Dikuasai</div>
     <div class="dynamic-list" id="lang-list">
       <div class="dynamic-item"><input type="text" placeholder="Bahasa Indonesia (Native), Inggris (Profesional)"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
     </div>
     <button class="btn-add" onclick="addItem('lang-list','Mandarin (Dasar)')">+ Tambah Bahasa</button>
 
-    <!-- SERTIFIKASI -->
     <div class="section-label">Sertifikasi (opsional)</div>
     <div class="dynamic-list" id="cert-list">
       <div class="dynamic-item"><input type="text" placeholder="AWS Certified Developer – 2022"/><button class="btn-remove" onclick="removeItem(this)">×</button></div>
@@ -397,7 +397,7 @@
     <div class="panel-title">Preview CV</div>
     <div class="cv-wrapper" id="cv-wrapper">
       <div class="cv-placeholder">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="4" width="32" height="40" rx="4" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="16" x2="34" y2="16" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="22" x2="34" y2="22" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="28" x2="26" y2="28" stroke="#1a1a2e" stroke-width="2"/></svg>
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none"><rect x="8" y="4" width="32" height="40" rx="4" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="16" x2="34" y2="16" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="22" x2="34" y2="22" stroke="#1a1a2e" stroke-width="2"/><line x1="14" y1="28" x2="26" y2="28" stroke="#1a1a2e" stroke-width="2"/></svg>
         <p>CV Anda akan muncul di sini<br>setelah mengisi data dan klik Generate</p>
       </div>
     </div>
@@ -413,186 +413,170 @@
   <div class="footer-logo">✦ CV Generator AI</div>
   <div class="footer-divider"></div>
   <div class="footer-text">
-    Dibuat dengan teknologi  <a href="https://www.anthropic.com/claude" target="_blank">Claude AI by Anthropic</a><br>
+    Dibuat dengan teknologi <a href="https://www.anthropic.com/claude" target="_blank">Claude AI by Anthropic</a><br>
     Ingin akses AI lebih canggih? <a href="https://www.anthropic.com/pricing" target="_blank">Lihat paket Claude AI →</a><br><br>
-    © 2025 CV Generator AI · Islamic Digital App by Muhamad Holis
+    © 2025 CV Generator AI · Powered by Claude & Groq AI
   </div>
 </footer>
 
 <script>
-let fotoBase64 = null;
-let activeTemplate = 1;
-let lastCV = null;
+let fotoBase64=null, activeTemplate=1, lastCV=null;
+
+// THEME
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-icon').textContent=isDark?'☀️':'🌙';
+  document.getElementById('theme-label').textContent=isDark?'Light':'Dark';
+  localStorage.setItem('theme',isDark?'light':'dark');
+}
+// Load saved theme
+const savedTheme=localStorage.getItem('theme');
+if(savedTheme){
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  if(savedTheme==='light'){
+    document.getElementById('theme-icon').textContent='☀️';
+    document.getElementById('theme-label').textContent='Light';
+  }
+}
 
 // SIDEBAR
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay');
-  const hamburger = document.getElementById('hamburger');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('open');
-  hamburger.classList.toggle('open');
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
 }
-function closeSidebar() {
+function closeSidebar(){
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
 }
-function toggleMenu(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('open');
-  document.querySelectorAll('.sidebar-content').forEach(c => c.classList.remove('open'));
-  if (!isOpen) el.classList.add('open');
+function toggleMenu(id){
+  const el=document.getElementById(id);
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.sidebar-content').forEach(c=>c.classList.remove('open'));
+  if(!isOpen)el.classList.add('open');
 }
 
 // FOTO
-function handleFoto(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    fotoBase64 = e.target.result;
-    document.getElementById('foto-preview').src = fotoBase64;
-    document.getElementById('foto-placeholder').style.display = 'none';
-    document.getElementById('foto-preview-wrap').style.display = 'block';
-    document.getElementById('btn-hapus-foto').style.display = 'inline-block';
-    if (lastCV) renderCV(lastCV);
+function handleFoto(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    fotoBase64=e.target.result;
+    document.getElementById('foto-preview').src=fotoBase64;
+    document.getElementById('foto-placeholder').style.display='none';
+    document.getElementById('foto-preview-wrap').style.display='block';
+    document.getElementById('btn-hapus-foto').style.display='inline-block';
+    if(lastCV)renderCV(lastCV);
   };
   reader.readAsDataURL(file);
 }
-function hapusFoto(e) {
+function hapusFoto(e){
   e.stopPropagation();
-  fotoBase64 = null;
-  document.getElementById('foto-input').value = '';
-  document.getElementById('foto-placeholder').style.display = 'block';
-  document.getElementById('foto-preview-wrap').style.display = 'none';
-  document.getElementById('btn-hapus-foto').style.display = 'none';
-  if (lastCV) renderCV(lastCV);
+  fotoBase64=null;
+  document.getElementById('foto-input').value='';
+  document.getElementById('foto-placeholder').style.display='block';
+  document.getElementById('foto-preview-wrap').style.display='none';
+  document.getElementById('btn-hapus-foto').style.display='none';
+  if(lastCV)renderCV(lastCV);
 }
 
 // TEMPLATE
-function pilihTemplate(n) {
-  activeTemplate = n;
-  document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('tpl-' + n).classList.add('active');
-  if (lastCV) renderCV(lastCV);
+function pilihTemplate(n){
+  activeTemplate=n;
+  document.querySelectorAll('.template-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tpl-'+n).classList.add('active');
+  if(lastCV)renderCV(lastCV);
 }
 
-// FORM HELPERS
-function addItem(listId, placeholder) {
-  const list = document.getElementById(listId);
-  const div = document.createElement('div');
-  div.className = 'dynamic-item';
-  div.innerHTML = `<input type="text" placeholder="${placeholder}"/><button class="btn-remove" onclick="removeItem(this)">×</button>`;
-  list.appendChild(div);
-  div.querySelector('input').focus();
+// FORM
+function addItem(listId,placeholder){
+  const list=document.getElementById(listId);
+  const div=document.createElement('div');
+  div.className='dynamic-item';
+  div.innerHTML=`<input type="text" placeholder="${placeholder}"/><button class="btn-remove" onclick="removeItem(this)">×</button>`;
+  list.appendChild(div);div.querySelector('input').focus();
 }
-function removeItem(btn) {
-  const list = btn.closest('.dynamic-list');
-  if (list.children.length > 1) btn.closest('.dynamic-item').remove();
+function removeItem(btn){
+  const list=btn.closest('.dynamic-list');
+  if(list.children.length>1)btn.closest('.dynamic-item').remove();
 }
-function getListValues(listId) {
-  return Array.from(document.querySelectorAll(`#${listId} input`)).map(i => i.value.trim()).filter(Boolean);
+function getListValues(listId){
+  return Array.from(document.querySelectorAll(`#${listId} input`)).map(i=>i.value.trim()).filter(Boolean);
 }
-function setStatus(msg) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.classList.add('visible');
+function setStatus(msg){
+  const el=document.getElementById('status-msg');
+  el.textContent=msg;el.classList.add('visible');
 }
 
-// GENERATE CV
-async function generateCV() {
-  const nama = document.getElementById('nama').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const posisi = document.getElementById('posisi').value.trim();
-  if (!nama || !email || !posisi) { setStatus('⚠ Mohon isi Nama, Email, dan Posisi.'); return; }
-
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ AI sedang menulis CV Anda...';
-  setStatus('🤖 Menghubungi AI...');
-
-  const kataKunci = document.getElementById('kata_kunci').value.trim();
-  const data = {
-    nama, tgl_lahir: document.getElementById('tgl_lahir').value,
-    email, telepon: document.getElementById('telepon').value.trim(),
-    lokasi: document.getElementById('lokasi').value.trim(),
-    linkedin: document.getElementById('linkedin').value.trim(),
-    posisi, kata_kunci: kataKunci,
-    pengalaman: getListValues('exp-list'),
-    pendidikan: getListValues('edu-list'),
-    skills: getListValues('skill-list'),
-    bahasa: getListValues('lang-list'),
-    sertifikasi: getListValues('cert-list'),
+// GENERATE
+async function generateCV(){
+  const nama=document.getElementById('nama').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const posisi=document.getElementById('posisi').value.trim();
+  if(!nama||!email||!posisi){setStatus('⚠ Mohon isi Nama, Email, dan Posisi.');return;}
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;btn.textContent='⏳ AI sedang menulis CV Anda...';setStatus('🤖 Menghubungi AI...');
+  const kataKunci=document.getElementById('kata_kunci').value.trim();
+  const data={
+    nama,tgl_lahir:document.getElementById('tgl_lahir').value,
+    email,telepon:document.getElementById('telepon').value.trim(),
+    lokasi:document.getElementById('lokasi').value.trim(),
+    linkedin:document.getElementById('linkedin').value.trim(),
+    posisi,kata_kunci:kataKunci,
+    pengalaman:getListValues('exp-list'),pendidikan:getListValues('edu-list'),
+    skills:getListValues('skill-list'),bahasa:getListValues('lang-list'),
+    sertifikasi:getListValues('cert-list'),
   };
-
-  const prompt = `Anda adalah penulis CV profesional Indonesia. Buat CV dalam format JSON. HANYA kembalikan JSON valid tanpa backtick:
-
+  const prompt=`Anda adalah penulis CV profesional Indonesia. Buat CV dalam format JSON. HANYA kembalikan JSON valid tanpa backtick:
 NAMA: ${data.nama}
-TANGGAL LAHIR: ${data.tgl_lahir || 'tidak disebutkan'}
+TANGGAL LAHIR: ${data.tgl_lahir||'tidak disebutkan'}
 EMAIL: ${data.email}
-TELEPON: ${data.telepon || 'tidak disebutkan'}
-LOKASI: ${data.lokasi || 'tidak disebutkan'}
-LINKEDIN: ${data.linkedin || 'tidak disebutkan'}
-POSISI YANG DITUJU: ${data.posisi}
-KATA KUNCI UNTUK RINGKASAN: ${data.kata_kunci || 'profesional, berdedikasi, berorientasi hasil'}
-PENGALAMAN: ${data.pengalaman.join(' | ') || 'tidak disebutkan'}
-PENDIDIKAN: ${data.pendidikan.join(' | ') || 'tidak disebutkan'}
-SKILLS: ${data.skills.join(', ') || 'tidak disebutkan'}
-BAHASA: ${data.bahasa.join(', ') || 'tidak disebutkan'}
-SERTIFIKASI: ${data.sertifikasi.join(', ') || 'tidak ada'}
-
-Untuk field "ringkasan": tulis 3-4 kalimat ringkasan profesional yang kuat berdasarkan KATA KUNCI dan posisi yang dituju. Buat terdengar natural, percaya diri, dan meyakinkan recruiter.
-
-Format JSON yang harus dikembalikan:
-{"nama":"","posisi_target":"","email":"","telepon":"","lokasi":"","linkedin":"","usia":"","ringkasan":"3-4 kalimat profesional berdasarkan kata kunci","pengalaman":[{"jabatan":"","perusahaan":"","periode":"","deskripsi":["","",""]}],"pendidikan":[{"gelar":"","institusi":"","tahun":""}],"skills":[""],"bahasa":[{"nama":"","level":""}],"sertifikasi":[""]}`;
-
-  try {
-    const res = await fetch('/.netlify/functions/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-    const apiData = await res.json();
-    if (!res.ok) throw new Error(apiData.error || 'Gagal dari server');
-    let text = '';
-    if (apiData.content && Array.isArray(apiData.content)) {
-      text = apiData.content.map(c => c.text || '').join('');
-    } else throw new Error('Format response tidak dikenali');
-    text = text.replace(/```json|```/g, '').trim();
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('JSON tidak ditemukan');
-    const cv = JSON.parse(jsonMatch[0]);
-    lastCV = cv;
-
-    // Tampilkan ringkasan preview
-    if (cv.ringkasan) {
-      const preview = document.getElementById('ringkasan-preview');
-      preview.textContent = cv.ringkasan;
+TELEPON: ${data.telepon||'tidak disebutkan'}
+LOKASI: ${data.lokasi||'tidak disebutkan'}
+LINKEDIN: ${data.linkedin||'tidak disebutkan'}
+POSISI: ${data.posisi}
+KATA KUNCI RINGKASAN: ${data.kata_kunci||'profesional, berdedikasi, berorientasi hasil'}
+PENGALAMAN: ${data.pengalaman.join(' | ')||'tidak disebutkan'}
+PENDIDIKAN: ${data.pendidikan.join(' | ')||'tidak disebutkan'}
+SKILLS: ${data.skills.join(', ')||'tidak disebutkan'}
+BAHASA: ${data.bahasa.join(', ')||'tidak disebutkan'}
+SERTIFIKASI: ${data.sertifikasi.join(', ')||'tidak ada'}
+Untuk "ringkasan": tulis 3-4 kalimat profesional kuat berdasarkan kata kunci dan posisi yang dituju.
+{"nama":"","posisi_target":"","email":"","telepon":"","lokasi":"","linkedin":"","usia":"","ringkasan":"","pengalaman":[{"jabatan":"","perusahaan":"","periode":"","deskripsi":["","",""]}],"pendidikan":[{"gelar":"","institusi":"","tahun":""}],"skills":[""],"bahasa":[{"nama":"","level":""}],"sertifikasi":[""]}`;
+  try{
+    const res=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const apiData=await res.json();
+    if(!res.ok)throw new Error(apiData.error||'Gagal dari server');
+    let text='';
+    if(apiData.content&&Array.isArray(apiData.content)){text=apiData.content.map(c=>c.text||'').join('');}
+    else throw new Error('Format response tidak dikenali');
+    text=text.replace(/```json|```/g,'').trim();
+    const jsonMatch=text.match(/\{[\s\S]*\}/);
+    if(!jsonMatch)throw new Error('JSON tidak ditemukan');
+    const cv=JSON.parse(jsonMatch[0]);
+    lastCV=cv;
+    if(cv.ringkasan){
+      const preview=document.getElementById('ringkasan-preview');
+      preview.textContent='"'+cv.ringkasan+'"';
       preview.classList.add('visible');
     }
-
-    renderCV(cv);
-    setStatus('✅ CV berhasil dibuat!');
-    document.getElementById('cv-actions').style.display = 'flex';
-  } catch (e) {
-    console.error(e);
-    setStatus('❌ Error: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '✦ Generate Ulang CV';
-  }
+    renderCV(cv);setStatus('✅ CV berhasil dibuat!');
+    document.getElementById('cv-actions').style.display='flex';
+  }catch(e){console.error(e);setStatus('❌ Error: '+e.message);}
+  finally{btn.disabled=false;btn.textContent='✦ Generate Ulang CV';}
 }
 
-// RENDER CV
-function renderCV(cv) {
-  const t = activeTemplate;
-  const wrapper = document.getElementById('cv-wrapper');
-  const fotoHTML = fotoBase64
-    ? `<img class="cv-foto" src="${fotoBase64}" alt="Foto">`
-    : `<div class="cv-foto-placeholder">👤</div>`;
+// RENDER
+function renderCV(cv){
+  const t=activeTemplate;
+  const wrapper=document.getElementById('cv-wrapper');
+  const fotoHTML=fotoBase64?`<img class="cv-foto" src="${fotoBase64}" alt="Foto">`:`<div class="cv-foto-placeholder">👤</div>`;
 
-  const expHTML = (cv.pengalaman || []).map(e => `
+  const expHTML=(cv.pengalaman||[]).map(e=>`
     <div class="cv-exp-item">
       <div class="cv-exp-role">${e.jabatan||''}</div>
       <div class="cv-exp-company">${e.perusahaan||''}</div>
@@ -600,23 +584,49 @@ function renderCV(cv) {
       <div class="cv-exp-desc">${(e.deskripsi||[]).map(d=>`• ${d}`).join('<br>')}</div>
     </div>`).join('');
 
-  const eduHTML = (cv.pendidikan||[]).map(e=>`
+  const eduHTML=(cv.pendidikan||[]).map(e=>`
     <div class="cv-edu-item">
       <div class="cv-edu-degree">${e.gelar||''}</div>
       <div class="cv-edu-school">${e.institusi||''}</div>
       <div class="cv-edu-year">${e.tahun||''}</div>
     </div>`).join('');
 
-  const skillHTML = (cv.skills||[]).map(s=>`<span class="cv-skill-tag">${s}</span>`).join('');
-  const langHTML = (cv.bahasa||[]).map(l=>`<div class="cv-lang-item"><span>${l.nama}</span><span class="cv-lang-level">${l.level}</span></div>`).join('');
-  const certHTML = (cv.sertifikasi||[]).filter(Boolean).length ? `
-    <div class="cv-section">
-      <div class="cv-section-title-side">Sertifikasi</div>
-      ${(cv.sertifikasi||[]).filter(Boolean).map(c=>`<div style="font-size:11px;color:#555;margin-bottom:4px">🏅 ${c}</div>`).join('')}
-    </div>` : '';
+  const skillHTML=(cv.skills||[]).map(s=>`<span class="cv-skill-tag">${s}</span>`).join('');
+  const langHTML=(cv.bahasa||[]).map(l=>`<div class="cv-lang-item"><span>${l.nama}</span><span class="cv-ll">${l.level}</span></div>`).join('');
+  const certHTML=(cv.sertifikasi||[]).filter(Boolean).length?`<div class="cv-section"><div class="cv-st cv-st-side">Sertifikasi</div>${(cv.sertifikasi||[]).filter(Boolean).map(c=>`<div style="font-size:11px;color:#555;margin-bottom:4px">🏅 ${c}</div>`).join('')}</div>`:'';
 
-  wrapper.innerHTML = `
-    <div id="cv-content" class="t${t}">
+  // Template 4 (White Formal) has different structure
+  let bodyHTML='';
+  if(t===4){
+    bodyHTML=`
+      <div class="cv-header-bar">
+        ${fotoHTML}
+        <div>
+          <div class="cv-name">${cv.nama||''}</div>
+          <div class="cv-title">${cv.posisi_target||''}</div>
+          <div class="cv-contact-bar">
+            ${cv.email?`<div class="cv-contact-item">✉ ${cv.email}</div>`:''}
+            ${cv.telepon?`<div class="cv-contact-item">📞 ${cv.telepon}</div>`:''}
+            ${cv.lokasi?`<div class="cv-contact-item">📍 ${cv.lokasi}</div>`:''}
+            ${cv.linkedin?`<div class="cv-contact-item">🔗 ${cv.linkedin}</div>`:''}
+            ${cv.usia&&cv.usia!=='tidak disebutkan'?`<div class="cv-contact-item">🎂 ${cv.usia}</div>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="cv-body">
+        <div class="cv-sidebar">
+          ${skillHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Keahlian</div><div class="cv-skill-list">${skillHTML}</div></div>`:''}
+          ${eduHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Pendidikan</div>${eduHTML}</div>`:''}
+          ${langHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Bahasa</div>${langHTML}</div>`:''}
+          ${certHTML}
+        </div>
+        <div>
+          ${cv.ringkasan?`<div class="cv-section"><div class="cv-st cv-st-main">Profil Profesional</div><div class="cv-summary">${cv.ringkasan}</div></div>`:''}
+          ${expHTML?`<div class="cv-section"><div class="cv-st cv-st-main">Pengalaman Kerja</div>${expHTML}</div>`:''}
+        </div>
+      </div>`;
+  } else {
+    bodyHTML=`
       <div class="cv-header-bar">
         ${fotoHTML}
         <div>
@@ -633,29 +643,31 @@ function renderCV(cv) {
       </div>
       <div class="cv-body">
         <div>
-          ${skillHTML?`<div class="cv-section"><div class="cv-section-title-side">Keahlian</div><div class="cv-skill-list">${skillHTML}</div></div>`:''}
-          ${eduHTML?`<div class="cv-section"><div class="cv-section-title-side">Pendidikan</div>${eduHTML}</div>`:''}
-          ${langHTML?`<div class="cv-section"><div class="cv-section-title-side">Bahasa</div>${langHTML}</div>`:''}
+          ${skillHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Keahlian</div><div class="cv-skill-list">${skillHTML}</div></div>`:''}
+          ${eduHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Pendidikan</div>${eduHTML}</div>`:''}
+          ${langHTML?`<div class="cv-section"><div class="cv-st cv-st-side">Bahasa</div>${langHTML}</div>`:''}
           ${certHTML}
         </div>
         <div>
-          ${cv.ringkasan?`<div class="cv-section"><div class="cv-section-title">Profil Profesional</div><div class="cv-summary">${cv.ringkasan}</div></div>`:''}
-          ${expHTML?`<div class="cv-section"><div class="cv-section-title">Pengalaman Kerja</div>${expHTML}</div>`:''}
+          ${cv.ringkasan?`<div class="cv-section"><div class="cv-st cv-st-main">Profil Profesional</div><div class="cv-summary">${cv.ringkasan}</div></div>`:''}
+          ${expHTML?`<div class="cv-section"><div class="cv-st cv-st-main">Pengalaman Kerja</div>${expHTML}</div>`:''}
         </div>
-      </div>
-    </div>`;
+      </div>`;
+  }
+
+  wrapper.innerHTML=`<div id="cv-content" class="t${t}">${bodyHTML}</div>`;
 }
 
-function downloadCV() {
-  const content = document.getElementById('cv-content');
-  if (!content) return;
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CV - ${document.getElementById('nama').value}</title>
+function downloadCV(){
+  const content=document.getElementById('cv-content');
+  if(!content)return;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CV - ${document.getElementById('nama').value}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>body{margin:0;color:#1a1a2e}${document.querySelector('style').textContent}</style>
 </head><body>${content.outerHTML}</body></html>`;
-  const a = document.createElement('a');
-  a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
-  a.download = 'CV_' + (document.getElementById('nama').value||'saya') + '.html';
+  const a=document.createElement('a');
+  a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
+  a.download='CV_'+(document.getElementById('nama').value||'saya')+'.html';
   a.click();
 }
 </script>
